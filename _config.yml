@@ -3,8 +3,8 @@ encoding: utf-8
 plugins:
   - jekyll-regex-replace
 
-# SEO相关信息
-title: shanks' blog
+# SEO
+title: shanks' cybersecurity blog
 description: cybersecurity
 keywords: cybersecurity, pentest, red team
 author: 
@@ -26,9 +26,6 @@ baseurl: ''
 # 吐个槽地址，会在chat页面中重定向到该地址
 tucaoUrl: 
 
-# 菜单
-# 必填字段 title: '文本' url: '链接'
-# 可选字段 target: '_blank' 新页面打开 
 menu:
   - title: /
     url: /
@@ -51,7 +48,3 @@ extMath: false
 
 # 显示访问量统计，由不蒜子提供服务
 extCount: false
-
-# 友情链接
-links:
- - nothing
