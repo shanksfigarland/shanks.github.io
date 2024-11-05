@@ -3,6 +3,8 @@ layout: mypost
 title: about
 ---
 
-> shanks
 
+> Cybersecurity Professional | OSCP, OSWP, CRTP
+
+Discord: #shanksf
 
