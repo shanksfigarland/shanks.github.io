@@ -5,16 +5,18 @@ categories: [GOAD]
 ---
 
 
+![goad](/assets/img/goad/goad.png)
+
 > GOAD is a pentest active directory LAB project. The purpose of this lab is to give pentesters a vulnerable Active directory environment ready to use to practice usual attack techniques. - https://github.com/Orange-Cyberdefense/GOAD 
 {: .prompt-info }
 
 <h3>The installation doesn't cover Windows as host, so I made a step by step tutorial.</h3>
 
-#### Made a repo containing all the steps here: 
+#### Made a Medium blog containing all the steps here: 
 ```
-https://github.com/shanksfigarland/GOAD-Windows-Install
+https://medium.com/p/5d987f0228bd
 ```
-
+PS: v2 version only as v3 is in beta and has bugs.
 
 #### List of some possible attacks contained in the lab:
 

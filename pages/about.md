@@ -4,7 +4,11 @@ title: about
 ---
 
 
-> Cybersecurity Professional | OSCP, OSWP, CRTP
+## Cybersecurity Professional 
+
+![d](/assets/img/about/d.png)
 
 Discord: #shanksf
+
+![kamusari](/assets/img/smb/kamusari.png)
 
