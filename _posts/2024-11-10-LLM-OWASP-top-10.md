@@ -6,7 +6,7 @@ layout: mypost
 
 ![a](/assets/img/llm/a.gif)
 
-# https://genai.owasp.org/llm-top-10/
+# Source: https://genai.owasp.org/llm-top-10/
 
 The rapid advancement of Large Language Models (LLMs) has revolutionized industries, from customer service chatbots to sophisticated content generation tools. However, with great power comes great responsibility—and risk. The Open Web Application Security Project (OWASP) has released the LLM Top 10, highlighting the most critical security vulnerabilities associated with these models. This blog post delves into each of these risks, providing insights into their implications and how to mitigate them.
 

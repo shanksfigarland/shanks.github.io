@@ -8,7 +8,7 @@ html {
   text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: 'Cascadia Code', Consolas, Helvetica, 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+  font-family: Consolas, Helvetica, sans-serif;
   overflow-y: overlay;
 }
 html[transition] {
@@ -43,6 +43,15 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+::-moz-selection { /* Code for Firefox */
+  background: red;
+}
+
+::selection {
+  background: red;
+}
+
 input,
 select,
 textarea {
