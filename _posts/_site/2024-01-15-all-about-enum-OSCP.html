@@ -1,0 +1,58 @@
+<blockquote class="prompt-warning">
+  <p>IN PROGRESS</p>
+</blockquote>
+
+<h2 id="enumeration-is-key"><span style="color: #74C7D2">Enumeration is key</span></h2>
+
+<p>As a OSCP holder, here’s how I would enumerate the machines.</p>
+
+<h3 id="rustscan-all-ports">Rustscan (all ports)</h3>
+
+<p>I’d do a quick <a href="https://github.com/RustScan/RustScan">rustscan</a> for all ports first and pipe the ports into nmap -p</p>
+
+<p>Example:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rustscan 192.168.26.14
+
+.----. .-. .-. .----..---.  .----. .---.   .--.  .-. .-.
+| <span class="o">{}</span>  <span class="o">}</span>| <span class="o">{</span> <span class="o">}</span> |<span class="o">{</span> <span class="o">{</span>__ <span class="o">{</span>_   _<span class="o">}{</span> <span class="o">{</span>__  /  ___<span class="o">}</span> / <span class="o">{}</span> <span class="se">\ </span>|  <span class="sb">`</span>| |
+| .-. <span class="se">\|</span> <span class="o">{</span>_<span class="o">}</span> |.-._<span class="o">}</span> <span class="o">}</span> | |  .-._<span class="o">}</span> <span class="o">}</span><span class="se">\ </span>    <span class="o">}</span>/  /<span class="se">\ </span> <span class="se">\|</span> |<span class="se">\ </span> |
+<span class="sb">`</span>-<span class="s1">' `-'</span><span class="sb">`</span><span class="nt">-----</span><span class="s1">'`----'</span>  <span class="sb">`</span>-<span class="s1">'  `----'</span>  <span class="sb">`</span><span class="nt">---</span><span class="s1">' `-'</span>  <span class="sb">`</span>-<span class="s1">'`-'</span> <span class="sb">`</span>-<span class="s1">'
+The Modern Day Port Scanner.
+________________________________________
+: http://discord.skerritt.blog           :
+: https://github.com/RustScan/RustScan :
+ --------------------------------------
+🌍HACK THE PLANET🌍
+
+[~] The config file is expected to be at "/home/rustscan/.rustscan.toml"
+[~] File limit higher than batch size. Can increase speed by increasing batch size '</span><span class="nt">-b</span> 1048476<span class="s1">'.
+Open 192.168.26.14:22
+Open 192.168.26.14:80
+Open 192.168.26.14:81
+Open 192.168.26.14:135
+</span></code></pre></div></div>
+
+<h3 id="nmap-all-ports-with-service-scan">Nmap (all ports with service scan)</h3>
+
+<p>Pipe the ports into nmap.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nmap 192.168.26.14 <span class="nt">-sV</span> <span class="nt">-sC</span> <span class="nt">-vv</span> <span class="nt">-p22</span>,80,81,135 <span class="nt">-T4</span> <span class="nt">-Pn</span> <span class="nt">-oN</span> allports
+
+<span class="c"># Nmap 7.94 scan initiated Tue Jan 15 12:24:57 2024 as: nmap -sV -sC -vv -T4 -p22,80,81,135 -oN service 192.168.26.14</span>
+Nmap scan report <span class="k">for </span>192.168.26.14
+Host is up, received syn-ack <span class="o">(</span>0.13s latency<span class="o">)</span><span class="nb">.</span>
+Scanned at 2024-01-15 12:24:57 <span class="nt">-03</span> <span class="k">for </span>179s
+
+PORT      STATE SERVICE       REASON  VERSION
+22/tcp    open  ssh           syn-ack OpenSSH for_Windows_8.1 <span class="o">(</span>protocol 2.0<span class="o">)</span>
+| ssh-hostkey: 
+|   3072 e0:3a:63:4a:07:83:4d:0b:6f:4e:8a:4d:79:3d:6e:4c <span class="o">(</span>RSA<span class="o">)</span>
+| ssh-rsa AAAAB3NzaC1yc2EAAAADAgLLakGf2MPORvtZSeF1gAL03sfUo/E/
+|   256 3f:16:ca:3 <span class="o">(</span>ECDSA<span class="o">)</span>
+| ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlNV8ECDl5yUqV7a41c39cXyPE6
+|   256 fe:b0:7a:14 <span class="o">(</span>ED25519<span class="o">)</span>
+|_ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICyZUVd
+80/tcp    open  http          syn-ack Apache httpd 2.4.51 
+81/tcp    open  http          syn-ack Apache httpd 2.4.51 
+135/tcp   open  msrpc         syn-ack Microsoft Windows RPC
+</code></pre></div></div>

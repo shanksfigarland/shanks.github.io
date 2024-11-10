@@ -1,0 +1,114 @@
+<blockquote class="prompt-warning">
+  <p>IN PROGRESS</p>
+</blockquote>
+
+<h2 id="what-is-user-account-control-uac"><span style="color: #74C7D2">What is User Account Control (UAC)?</span></h2>
+
+<p>According to <a href="https://learn.microsoft.com/en-us/windows/security/application-security/application-control/user-account-control/">Microsoft</a>:</p>
+
+<blockquote class="prompt-info">
+  <p>User Account Control (UAC) is a Windows security feature designed to protect the operating system from unauthorized changes. When changes to the system require administrator-level permission, UAC notifies the user, giving the opportunity to approve or deny the change. UAC improves the security of Windows devices by limiting the access that malicious code has to execute with administrator privileges. UAC empowers users to make informed decisions about actions that may affect the stability and security of their device.</p>
+</blockquote>
+<blockquote class="prompt-info">
+  <p>Unless you disable UAC, malicious software is prevented from disabling or interfering with UAC settings. UAC is enabled by default, and you can configure it if you have administrative privileges.</p>
+</blockquote>
+
+<p><img src="https://learn.microsoft.com/en-us/windows/security/application-security/application-control/user-account-control/images/uac-consent-prompt-admin.png" alt="uac" /></p>
+
+<h2 id="checking-if-uac-is-enabled"><span style="color: #74C7D2">Checking if UAC is enabled</span></h2>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">REG</span><span class="w"> </span><span class="nx">QUERY</span><span class="w"> </span><span class="nx">HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\</span><span class="w"> </span><span class="nx">/v</span><span class="w"> </span><span class="nx">EnableLUA</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/img/commons/uac-disable.png" alt="uac-disabled" /></p>
+
+<ul>
+  <li>If 0 then, UAC won’t prompt (like disabled)</li>
+  <li>If 1 the admin is asked for username and password to execute the binary with high rights (on Secure Desktop)</li>
+  <li>If 2 (Always notify me) UAC will always ask for confirmation to the administrator when he tries to execute something with high privileges (on Secure Desktop)</li>
+  <li>If 3 like 1 but not necessary on Secure Desktop</li>
+  <li>If 4 like 2 but not necessary on Secure Desktop</li>
+  <li>If 5(default) it will ask the administrator to confirm to run non Windows binaries with high privileges</li>
+</ul>
+
+<p>My friend <a href="https://github.com/wint3rmuted">wint3rmuted</a> made a dirty script to check it:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># A PowerShell script to query the UAC.</span><span class="w">
+</span><span class="c"># Retrieves the values of the LocalAccountTokenFilterPolicy and FilterAdministratorToken registry keys, and take user input to save the output to a .txt file</span><span class="w">
+</span><span class="c"># For Reference: </span><span class="w">
+</span><span class="c"># If EnableLUA=0 or doesn't exist, no UAC for anyone</span><span class="w">
+</span><span class="c"># If EnableLua=1 and LocalAccountTokenFilterPolicy=1 , No UAC for anyone</span><span class="w">
+</span><span class="c"># If EnableLua=1 and LocalAccountTokenFilterPolicy=0 and FilterAdministratorToken=0, No UAC for RID 500 (Built-in Administrator)</span><span class="w">
+</span><span class="c"># If EnableLua=1 and LocalAccountTokenFilterPolicy=0 and FilterAdministratorToken=1, UAC for everyone</span><span class="w">
+
+</span><span class="c"># Function to print colored text</span><span class="w">
+</span><span class="kr">function</span><span class="w"> </span><span class="nf">Write-ColoredText</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="kr">param</span><span class="w"> </span><span class="p">(</span><span class="w">
+        </span><span class="p">[</span><span class="n">string</span><span class="p">]</span><span class="nv">$text</span><span class="p">,</span><span class="w">
+        </span><span class="p">[</span><span class="n">string</span><span class="p">]</span><span class="nv">$color</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+
+    </span><span class="n">Write-Host</span><span class="w"> </span><span class="nv">$text</span><span class="w"> </span><span class="nt">-ForegroundColor</span><span class="w"> </span><span class="nv">$color</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="c"># Display ASCII banner with colored text</span><span class="w">
+</span><span class="n">Write-ColoredText</span><span class="w"> </span><span class="sh">@"
+
+ _     _ _______ _______ _______ _______ _______ __   _
+ |     | |_____| |       |______ |       |_____| | \  |
+ |_____| |     | |_____  ______| |_____  |     | |  \_| 
+                                    
+                                    by @wint3rmute
+ 
+"@</span><span class="w"> </span><span class="s2">"Cyan"</span><span class="w">
+
+</span><span class="c"># Define the registry path for UAC settings</span><span class="w">
+</span><span class="nv">$uacRegistryPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"</span><span class="w">
+
+</span><span class="c"># Get the value of the EnableLUA registry key</span><span class="w">
+</span><span class="nv">$enableLUA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Get-ItemProperty</span><span class="w"> </span><span class="nt">-Path</span><span class="w"> </span><span class="nv">$uacRegistryPath</span><span class="w"> </span><span class="nt">-Name</span><span class="w"> </span><span class="nx">EnableLUA</span><span class="w">
+
+</span><span class="c"># Get the value of the ConsentPromptBehaviorAdmin registry key</span><span class="w">
+</span><span class="nv">$consentPromptBehaviorAdmin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Get-ItemProperty</span><span class="w"> </span><span class="nt">-Path</span><span class="w"> </span><span class="nv">$uacRegistryPath</span><span class="w"> </span><span class="nt">-Name</span><span class="w"> </span><span class="nx">ConsentPromptBehaviorAdmin</span><span class="w">
+
+</span><span class="c"># Display the UAC settings with colored text</span><span class="w">
+</span><span class="n">Write-ColoredText</span><span class="w"> </span><span class="s2">"UAC Settings:"</span><span class="w"> </span><span class="s2">"Pink"</span><span class="w">
+</span><span class="n">Write-ColoredText</span><span class="w"> </span><span class="s2">"EnableLUA: </span><span class="si">$(</span><span class="nv">$enableLUA</span><span class="o">.</span><span class="nf">EnableLUA</span><span class="si">)</span><span class="s2">"</span><span class="w"> </span><span class="s2">"White"</span><span class="w">
+</span><span class="n">Write-ColoredText</span><span class="w"> </span><span class="s2">"ConsentPromptBehaviorAdmin: </span><span class="si">$(</span><span class="nv">$consentPromptBehaviorAdmin</span><span class="o">.</span><span class="nf">ConsentPromptBehaviorAdmin</span><span class="si">)</span><span class="s2">"</span><span class="w"> </span><span class="s2">"White"</span><span class="w">
+
+</span><span class="c"># Define the registry path for LocalAccountTokenFilterPolicy</span><span class="w">
+</span><span class="nv">$tokenFilterRegistryPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"</span><span class="w">
+
+</span><span class="c"># Get the value of the LocalAccountTokenFilterPolicy registry key</span><span class="w">
+</span><span class="nv">$localAccountTokenFilterPolicy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Get-ItemProperty</span><span class="w"> </span><span class="nt">-Path</span><span class="w"> </span><span class="nv">$tokenFilterRegistryPath</span><span class="w"> </span><span class="nt">-Name</span><span class="w"> </span><span class="nx">LocalAccountTokenFilterPolicy</span><span class="w">
+
+</span><span class="c"># Get the value of the FilterAdministratorToken registry key</span><span class="w">
+</span><span class="nv">$filterAdministratorToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Get-ItemProperty</span><span class="w"> </span><span class="nt">-Path</span><span class="w"> </span><span class="nv">$uacRegistryPath</span><span class="w"> </span><span class="nt">-Name</span><span class="w"> </span><span class="nx">FilterAdministratorToken</span><span class="w">
+
+</span><span class="c"># Display the values of LocalAccountTokenFilterPolicy and FilterAdministratorToken with colored text</span><span class="w">
+</span><span class="n">Write-ColoredText</span><span class="w"> </span><span class="s2">"LocalAccountTokenFilterPolicy: </span><span class="si">$(</span><span class="nv">$localAccountTokenFilterPolicy</span><span class="o">.</span><span class="nf">LocalAccountTokenFilterPolicy</span><span class="si">)</span><span class="s2">"</span><span class="w"> </span><span class="s2">"White"</span><span class="w">
+</span><span class="n">Write-ColoredText</span><span class="w"> </span><span class="s2">"FilterAdministratorToken: </span><span class="si">$(</span><span class="nv">$filterAdministratorToken</span><span class="o">.</span><span class="nf">FilterAdministratorToken</span><span class="si">)</span><span class="s2">"</span><span class="w"> </span><span class="s2">"White"</span><span class="w">
+
+</span><span class="c"># Prompt user for file path to save output</span><span class="w">
+</span><span class="nv">$filePath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Read-Host</span><span class="w"> </span><span class="s2">"Enter the path to save the output (include .txt extension):"</span><span class="w">
+
+</span><span class="c"># Create a hashtable with data to be saved</span><span class="w">
+</span><span class="nv">$outputData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">@{</span><span class="w">
+    </span><span class="s2">"EnableLUA"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$enableLUA</span><span class="err">.</span><span class="nx">EnableLUA</span><span class="w">
+    </span><span class="s2">"ConsentPromptBehaviorAdmin"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$consentPromptBehaviorAdmin</span><span class="err">.</span><span class="nx">ConsentPromptBehaviorAdmin</span><span class="w">
+    </span><span class="s2">"LocalAccountTokenFilterPolicy"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$localAccountTokenFilterPolicy</span><span class="err">.</span><span class="nx">LocalAccountTokenFilterPolicy</span><span class="w">
+    </span><span class="s2">"FilterAdministratorToken"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$filterAdministratorToken</span><span class="err">.</span><span class="nx">FilterAdministratorToken</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="c"># Convert hashtable to string and save to file</span><span class="w">
+</span><span class="nv">$outputData</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Out-String</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Out-File</span><span class="w"> </span><span class="nt">-FilePath</span><span class="w"> </span><span class="nv">$filePath</span><span class="w">
+
+</span><span class="n">Write-ColoredText</span><span class="w"> </span><span class="s2">"Output saved to </span><span class="nv">$filePath</span><span class="s2">"</span><span class="w"> </span><span class="s2">"Green"</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="fodhelper-oscp"><span style="color: #74C7D2">Fodhelper: OSCP</span></h2>
+
+<blockquote class="prompt-info">
+  <p>Fodhelper.exe is one of Windows default executables in charge of managing Windows optional features, including additional languages, applications not installed by default, or other operating-system characteristics. Like most of the programs used for system configuration, fodhelper can auto elevate when using default UAC settings so that administrators won’t be prompted for elevation when performing standard administrative tasks. While we’ve already taken a look at an autoElevate executable, unlike msconfig, fodhelper can be abused without having access to a GUI.</p>
+</blockquote>
+

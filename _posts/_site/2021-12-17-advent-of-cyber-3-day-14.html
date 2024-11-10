@@ -1,0 +1,113 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+
+<p>Understanding the CI/CD concept
+Overview of risks associated with CI/CD
+Having a basic understanding of CI/CD exploitation vectors</p>
+
+<hr />
+
+<p>First thing I did was to get the IP and export it to make it easier, like so:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">ip</span><span class="o">=[</span>targetIP]
+</code></pre></div></div>
+<p>I checked the website to find some clues… ‘nothing’ but The Grinch.</p>
+
+<p><img src="/assets/img/aoc3day14/2.png" alt="Website" title="The Grinch" /></p>
+
+<p>Next, I ran gobuster on the website to check for directories, found some interesting ones:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gobuster <span class="nb">dir</span> <span class="nt">-u</span> 10.10.65.172 <span class="nt">-w</span> /usr/share/seclists/Discovery/Web-Content/common.txt <span class="nt">-t</span> 50
+</code></pre></div></div>
+<p>Results:
+<img src="/assets/img/aoc3day14/1.png" alt="Gobuster" title="Gobuster" /></p>
+
+<p>As follows I checked both <em>admin</em> and <em>warez</em>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">admin</th>
+      <th style="text-align: center">warez</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><img src="/assets/img/aoc3day14/4.png" alt="Admin" title="Admin" /></td>
+      <td style="text-align: center"><img src="/assets/img/aoc3day14/3.png" alt="Warez" title="Warez" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Nothing interesting on warez other than the <em>“The loot folder on this target is where I send all date I collect. I’ve made page that updates regularly and prints the contents of the loof folder”</em>, nice. So let’s move on to admin.
+Looks promising. Looks like it’s ls’ing some files.</p>
+
+<p><img src="/assets/img/aoc3day14/5.png" alt="ls" title="ls" /></p>
+
+<p>Checked for the source-page and it has a file named <code class="language-plaintext highlighter-rouge">/ls.html</code>.</p>
+
+<p>Connected to SSH using:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>username: mcskidy
+password: Password1
+</code></pre></div></div>
+<p>Upon connecting, we find a few folders, <em>/home/thegrinch/loot</em> and <em>/home/thegrinch/scripts</em> being the most important.</p>
+
+<p>The contents of <em>loot.sh</em> script gives us a base to understand the <code class="language-plaintext highlighter-rouge">ls.html</code> file from earlier.</p>
+
+<p>Using <code class="language-plaintext highlighter-rouge">ls -la</code> to check for the files permissions, we find out that <em>loot.sh</em> has written access which we can use to change the code inside to our needs and its owned by <em>root</em>.</p>
+
+<p><img src="/assets/img/aoc3day14/7.png" alt="permissions" title="Permissions" /></p>
+
+<p>What if we use the contents of the file to execute a command towards <code class="language-plaintext highlighter-rouge">/etc/shadow</code>?</p>
+
+<p>I then used <code class="language-plaintext highlighter-rouge">cat /etc/shadow</code> and reloaded the <em>/admin</em> page on my browser to check if it worked.</p>
+
+<p><img src="/assets/img/aoc3day14/6.png" alt="File" title="File" /></p>
+
+<p>Checking the page………… and boom. It works.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">The code</th>
+      <th style="text-align: center">Admin Page with the contents of /etc/shadow</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><img src="/assets/img/aoc3day14/9.png" alt="code" title="code" /></td>
+      <td style="text-align: center"><img src="/assets/img/aoc3day14/8.png" alt="/etc/shadow" title="/etc/shadow" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>This means that any command we execute it’ll be run as root.</p>
+
+<p>We now change <em>/etc/shadow</em> to the path of <em>check.sh</em> to read its content.</p>
+
+<p><img src="/assets/img/aoc3day14/9.png" alt="check.sh" title="check.sh" /></p>
+
+<p>We wait a few minutes and reload <em>/admin</em> again to check its contents.</p>
+
+<p><img src="/assets/img/aoc3day14/10.png" alt="check.sh" title="check.sh" /></p>
+
+<p>This script checks the existence of a file called “remindme.txt” in the <em>/loot</em> folder. 
+It will print the password of the grinch in a html file called <em>/pass.html</em>.</p>
+
+<p><img src="/assets/img/aoc3day14/11.png" alt="remind" title="remindme" /></p>
+
+<p>Checking the html file we can confirm the password is <em>ELFSareFAST</em>.
+Maybe we could use it for something?</p>
+
+<p><img src="/assets/img/aoc3day14/12.png" alt="pass" title="pass" /></p>
+
+<p>I tried to login into SSH again but now as <em>thegrinch</em>.</p>
+
+<p>Once connected, to find the flag I used the following:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>find / <span class="nt">-name</span> flag.txt 2&gt;/dev/null
+</code></pre></div></div>
+<p>and cat the flag.</p>
+
+<p>BOOM! Done!</p>
+
+<p><img src="/assets/img/aoc3day14/13.png" alt="flag" title="flag" /></p>
+

