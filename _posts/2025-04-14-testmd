@@ -1,0 +1,19 @@
+---
+layout: post
+title: "Welcome to My Minimalist Jekyll Site"
+date: 2025-04-14
+categories: [jekyll, update]
+---
+
+This is your first post. Edit or delete it, then start writing!
+
+## Markdown Features
+
+Jekyll also offers powerful support for code snippets:
+
+```ruby
+def print_hi(name)
+  puts "Hi, #{name}"
+end
+print_hi('Tom')
+#=> prints 'Hi, Tom' to STDOUT.
