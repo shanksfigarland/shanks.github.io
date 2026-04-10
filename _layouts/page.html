@@ -1,43 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if page.title %}{{ page.title }} - {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
-  <meta name="description" content="{{ page.excerpt | default: site.description | strip_html | normalize_whitespace | truncate: 160 | escape }}">
-  <link rel="stylesheet" href="{{ "/static/css/styles.css" | relative_url }}">
-  <link rel="icon" href="{{ "/favicon.ico" | relative_url }}">
-  {% feed_meta %}
-  {% seo %}
-</head>
-<body>
-  <div class="container">
-    <header class="site-header">
-      <a class="site-title" href="{{ site.baseurl }}/">{{ site.title }}</a>
-      <nav class="site-nav">
-        <a href="{{ site.baseurl }}/">Home</a>
-        <a href="{{ site.baseurl }}/pages/about">About</a>
-      </nav>
-    </header>
+﻿---
+layout: default
+---
 
-    <main class="content">
-      {{ content }}
-    </main>
-
-    <footer class="site-footer">
-      <div class="footer-content">
-        <p>© {{ site.time | date: '%Y' }} {{ site.title }}</p>
-      </div>
-    </footer>
-  </div>
-
-  {% if jekyll.environment == "production" %}
-  <script src="{{ "/service-worker.js" | relative_url }}"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('{{ "/service-worker.js" | relative_url }}');
-    }
-  </script>
-  {% endif %}
-</body>
-</html>
+<section class="page-shell">
+  <h1 class="page-title">{{ page.title }}</h1>
+  {{ content }}
+</section>

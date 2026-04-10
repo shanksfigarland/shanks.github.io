@@ -1,18 +1,23 @@
-<footer class="footer">
-  <span>{{ site.footerText }}</span>
-  <a href="{{ site.baseurl }}/static/xml/rss.xml"></a>
-  {%- comment %} 请保留主题来源，么么哒~ {% endcomment %}
-  <span></span>
-  <a href=""></a>
+﻿<footer class="footer">
+  <p class="footer-line">
+    <strong>{{ site.footerText }}</strong>
+    <span class="dot">*</span>
+    <span>{{ site.time | date: "%Y" }}</span>
+  </p>
+
+  <p class="footer-links">
+    <a href="{{ site.baseurl }}/static/xml/rss.xml">rss</a>
+    <a href="https://github.com/shanksfigarland/shanks.github.io" target="_blank" rel="noopener">source</a>
+  </p>
 
   {%- if site.extCount %}
-    <span>总访问量</span>
-    <span id="busuanzi_value_site_pv"></span>
+    <p class="footer-count">views: <span id="busuanzi_value_site_pv"></span></p>
   {% endif %}
-  <div class="footer-btn theme-toggler hide">
+
+  <div class="footer-btn theme-toggler hide" aria-label="toggle theme">
     <i class="svg-icon icon-theme-light"></i>
   </div>
-  <div class="footer-btn to-top">
+  <div class="footer-btn to-top" aria-label="back to top">
     <i class="svg-icon icon-arrow-top"></i>
   </div>
 </footer>

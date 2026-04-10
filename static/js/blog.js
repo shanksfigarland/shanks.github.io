@@ -1,9 +1,9 @@
 // 打印主题标识,请保留出处
 ;(function () {
-  var style1 = 'background:#4BB596;color:#ffffff;border-radius: 2px;'
+  var style1 = 'background:#148f51;color:#ffffff;border-radius:2px;'
   var style2 = 'color:auto;'
-  var author = ' TMaize'
-  var github = ' https://github.com/TMaize/tmaize-blog'
+  var author = ' shanks'
+  var github = ' https://github.com/shanksfigarland/shanks.github.io'
   var build = ' ' + blog.buildAt.substr(0, 4)
   build += '/' + blog.buildAt.substr(4, 2)
   build += '/' + blog.buildAt.substr(6, 2)

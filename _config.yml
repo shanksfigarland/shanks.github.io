@@ -1,16 +1,15 @@
-encoding: utf-8
+﻿encoding: utf-8
 
 plugins:
   - jekyll-regex-replace
 
-# SEO
-title: shanks' cybersecurity blog
-description: cybersecurity
-keywords: cybersecurity, pentest, red team
-author: 
-footerText: 'Copyright © 2024 shanks'
+# Site identity
+title: shanks//lab
+description: Minimal hacker notes, writeups, and experiments.
+keywords: cybersecurity, pentest, red team, writeups
+author: shanks
+footerText: shanks//lab
 
-# 这些不要动
 permalink: /posts/:year/:month/:day/:title.html
 kramdown:
   auto_ids: true
@@ -18,33 +17,23 @@ kramdown:
   syntax_highlighter: rouge
 exclude: [vendor]
 
-# 域名配置
-# baseurl配置,如果网站部署在根目录下的其他目录中，请设置为 /目录名
+# Project Pages settings
 domainUrl: 'https://shanksfigarland.github.io'
 baseurl: '/shanks.github.io'
 
-# 吐个槽地址，会在chat页面中重定向到该地址
-tucaoUrl: 
+tucaoUrl:
 
 menu:
-  - title: /
+  - title: home
     url: /
-  - title: categories
+  - title: archive
     url: /pages/categories.html
   - title: search
     url: /pages/search.html
   - title: about
     url: /pages/about.html
 
-# 点击页面文字冒出特效,不需要请设置为false
-extClickEffect: true
-
-# Google Adsense,不需要请设置为false
-# _includes/ext-adsense.html 里面修改为自己的配置
+extClickEffect: false
 extAdsense: false
-
-# 数学公式支持，比较影响加载速度,不需要请设置为false
 extMath: false
-
-# 显示访问量统计，由不蒜子提供服务
 extCount: false
