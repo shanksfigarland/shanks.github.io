@@ -80,4 +80,4 @@ And that's pretty much it! Very quick and simple.
 **Happy hacking!**
 
 
-![kamusari](/assets/img/smb/kamusari.png)
+![kamusari]({{ site.baseurl }}/assets/img/smb/kamusari.png)

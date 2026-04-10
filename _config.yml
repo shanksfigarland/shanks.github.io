@@ -20,8 +20,8 @@ exclude: [vendor]
 
 # 域名配置
 # baseurl配置,如果网站部署在根目录下的其他目录中，请设置为 /目录名
-domainUrl: 'https://shanks.zip' 
-baseurl: ''
+domainUrl: 'https://shanksfigarland.github.io'
+baseurl: '/shanks.github.io'
 
 # 吐个槽地址，会在chat页面中重定向到该地址
 tucaoUrl: 

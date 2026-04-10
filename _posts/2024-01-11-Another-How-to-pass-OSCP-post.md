@@ -4,7 +4,7 @@ layout: mypost
 categories: [OSCP]
 ---
 
-I [passed my OSCP last year](https://shanks.zip/posts/2023/10/06/finally-oscp.html) and I'll share some tips and advice because I'm seeing a lot of people failing over the last months and I'd be one of them if I didn't persevere and try everything until the last minute.
+I [passed my OSCP last year](https://shanksfigarland.github.io/shanks.github.io/posts/2023/10/06/finally-oscp.html) and I'll share some tips and advice because I'm seeing a lot of people failing over the last months and I'd be one of them if I didn't persevere and try everything until the last minute.
 
 ## <span style="color: #74C7D2">1. Don't panic if you get stuck</span>
 I got stuck for the first 16 hours and managed to root all three standalones in the last ~6 hours of the exam. 
@@ -70,4 +70,4 @@ Any questions hit me up on there. (I don't take DM's)
 
 Happy journey!
 
-![passing](/assets/img/passing.png)
+![passing]({{ site.baseurl }}/assets/img/passing.png)

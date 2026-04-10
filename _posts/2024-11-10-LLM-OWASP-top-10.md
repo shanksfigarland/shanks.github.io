@@ -4,7 +4,7 @@ categories: [LLM]
 layout: mypost
 ---
 
-![a](/assets/img/llm/a.gif)
+![a]({{ site.baseurl }}/assets/img/llm/a.gif)
 
 # Source: https://genai.owasp.org/llm-top-10/
 

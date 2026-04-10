@@ -92,11 +92,11 @@ There's a lot of info, this is because this box have a lot of rabbit holes and I
 
 For example on Port 80:
 
-![port](/assets/img/clamav/80.jpg)
+![port]({{ site.baseurl }}/assets/img/clamav/80.jpg)
 
 Using `CyberChef` to decode from Binary.
 
-![cyber](/assets/img/clamav/cyberchef.jpg)
+![cyber]({{ site.baseurl }}/assets/img/clamav/cyberchef.jpg)
 
 Dead end! lulz
 
@@ -139,7 +139,7 @@ Bingo! This is the one `Sendmail with clamav-milter < 0.91.2 - Remote Command Ex
 
 Checking the code, we need to give the IP so it opens a new port we can connect to.
 
-![code](/assets/img/clamav/code.jpg)
+![code]({{ site.baseurl }}/assets/img/clamav/code.jpg)
 
 We execute it like this:
 
@@ -187,7 +187,7 @@ And we are root! No need for privesc.
 
 Happy hacking!
 
-![kamusari](/assets/img/smb/kamusari.png)
+![kamusari]({{ site.baseurl }}/assets/img/smb/kamusari.png)
 
 
 

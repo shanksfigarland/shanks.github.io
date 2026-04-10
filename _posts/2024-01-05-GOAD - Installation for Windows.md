@@ -5,7 +5,7 @@ categories: [GOAD]
 ---
 
 
-![goad](/assets/img/goad/goad.png)
+![goad]({{ site.baseurl }}/assets/img/goad/goad.png)
 
 > GOAD is a pentest active directory LAB project. The purpose of this lab is to give pentesters a vulnerable Active directory environment ready to use to practice usual attack techniques. - https://github.com/Orange-Cyberdefense/GOAD 
 {: .prompt-info }

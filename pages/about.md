@@ -6,9 +6,9 @@ title: about
 
 ## Cybersecurity Professional 
 
-![d](/assets/img/about/d.png)
+![d]({{ site.baseurl }}/assets/img/about/d.png)
 
 Discord: #shanksf
 
-![kamusari](/assets/img/smb/kamusari.png)
+![kamusari]({{ site.baseurl }}/assets/img/smb/kamusari.png)
 

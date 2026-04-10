@@ -28,7 +28,7 @@ According to [Microsoft](https://learn.microsoft.com/en-us/windows/security/appl
 REG QUERY HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\ /v EnableLUA
 ```
 
-![uac-disabled](/assets/img/commons/uac-disable.png)
+![uac-disabled]({{ site.baseurl }}/assets/img/commons/uac-disable.png)
 
 
 - If 0 then, UAC won't prompt (like disabled)
